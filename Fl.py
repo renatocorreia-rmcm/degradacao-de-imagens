@@ -2,8 +2,8 @@ from __future__ import annotations # allow to reference type class inside hersel
 from math import log, floor
 
 # MACHINE SETTINGS
-b=2
-t=3
+b=10
+t=2
 k1=-5
 k2=5
 
@@ -24,10 +24,10 @@ class Fl:
         # scientific notation
         self.sinal = -1 if x < 0 else 1
         x = abs(x)
-        self.e = int(floor(log(x, b)))
+        self.e = int(floor(log(x, b)))+1
         self.m = x / (b ** self.e)
-        self.m = round(self.m, t - 1)  # todo: allow truncation
-        if self.m >= b:
+        self.m = round(self.m, t)  # todo: allow truncation
+        if self.m >= 1:
             self.m /= b
             self.e += 1
 
@@ -64,6 +64,10 @@ class Fl:
 
 
 
-a = Fl(3.12345)
-
+a = Fl(0.2345)
 print(a)
+c = Fl(5.5)
+print(c)
+
+print(a+c)
+
