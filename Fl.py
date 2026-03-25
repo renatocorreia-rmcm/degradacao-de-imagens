@@ -1,73 +1,118 @@
-from __future__ import annotations # allow to reference type class inside herself
+from __future__ import annotations  # allow to reference type class inside herself
+
+import math
 from math import log, floor
+from typing import Union
 
 # MACHINE SETTINGS
-b=10
-t=2
-k1=-5
-k2=5
+b = 10
+t = 4
+k1 = -3
+k2 = 3
 
 
 class Fl:
+	"""
+    Type class for representable floats inside small machine
+    Closed for math operations
+    """
 
-    value: float
+	value: float
 
-    def __init__(self, x):
+	# used in representation only
 
-        # absolute zero
-        if x == 0:
-            self.value = 0
-            return
+	sinal: int
+	m: float
+	e: int
 
-        # other cases
+	def __init__(self, x):
 
-        # scientific notation
-        self.sinal = -1 if x < 0 else 1
-        x = abs(x)
-        self.e = int(floor(log(x, b)))+1
-        self.m = x / (b ** self.e)
-        self.m = round(self.m, t)  # todo: allow truncation
-        if self.m >= 1:
-            self.m /= b
-            self.e += 1
+		if isinstance(x, Fl):  # avoid redundancy in parsing
+			self.value = x.value
+			self.sinal = x.sinal
+			self.m = x.m
+			self.e = x.e
+			return
 
-        # infinite
-        if self.e > k2:
-            self.value = float('inf')
-            return
-        # zero
-        if self.e < k1:
-            self.value = 0
-            return
+		# absolute zero
+		if x == 0:
+			self.value = 0
+			return
+		if math.isinf(x):
+			self.value = x
+			return
 
-        # ordinary representable
-        self.value = self.sinal * self.m * (b ** self.e)
-        return
+		# other cases
+
+		# scientific notation
+		self.sinal = -1 if x < 0 else 1
+		x = abs(x)
+		self.e = int(floor(log(x, b))) + 1
+		self.m = x / (b ** self.e)
+		self.m = round(self.m, t)  # todo: allow truncation
+		if self.m >= 1:
+			self.m /= b
+			self.e += 1
+
+		# infinite
+		if self.e > k2:
+			self.value = float('inf')
+			return
+		# zero
+		if self.e < k1:
+			self.value = 0
+			return
+
+		# ordinary representable
+		self.value = self.sinal * self.m * (b ** self.e)
+		return
+
+	def __add__(self, other):
+		if isinstance(other, Fl):
+			return Fl(self.value + other.value)
+
+		return self.__add__(Fl(other))
+
+	def __radd__(self, other):
+		return self.__add__(other)
+
+	def __neg__(self):
+		return Fl(-self.value)
+
+	def __sub__(self, other):
+		return self.__add__(-other)
+
+	def __rsub__(self, other):
+		return (-self).__add__(other)
+
+	def __mul__(self, other):
+		if isinstance(other, Fl):
+			return Fl(self.value.__mul__(other.value))
+		return self.__mul__(Fl(other))
+
+	def __rmul__(self, other):
+		return self.__mul__(other)
+
+	def __truediv__(self, other):
+		if isinstance(other, Fl):
+			return Fl(self.value / other.value)
+		return self.__truediv__(Fl(other))
+
+	def __rtruediv__(self, other):
+		if isinstance(other, Fl):
+			return Fl(other.value / self.value)
+		return Fl(other).__truediv__(self)
+
+	def __repr__(self):
+		if self.value == float('inf') or self.value == 0:
+			return str(self.value)
+		return f"{'-' if self.sinal == -1 else '+'}{self.m}{(t+2-len(str(self.m)))*'0'}*{b}^{self.e}"  # todo: optimize trailling zeros format
 
 
-
-
-    def __add__(self, other: Fl):
-        return Fl(self.value + other.value)
-
-    def __sub__(self, other):
-        return Fl(self.value - other.value)
-
-    def __mul__(self, other):
-        return Fl(self.value * other.value)
-
-    def __truediv__(self, other):
-        return Fl(self.value / other.value)
-
-    def __repr__(self):
-        return f"{self.m}*{b}^{self.e}"
-
-
-
-a = Fl(0.2345)
-print(a)
-c = Fl(5.5)
-print(c)
-
-print(a+c)
-
+print(Fl(2) + 100 - 10)
+print(3+-Fl(-5.5))
+print(float('-inf'))
+print(10 - Fl(5))
+print(-Fl(-4))
+print(Fl(3)/2)
+print(3/Fl(2)*4/10)
