@@ -52,10 +52,10 @@ R = np.array([[math.cos(theta), math.sin(theta)], [-math.sin(theta), math.cos(th
 
 
 def f(coord):
-	return [math.sin(coord[0])*1800, math.cos(coord[1])*800]
+	return [coord[0]+math.sin(coord[1]/60)*100, coord[1]]
 
 
-new_img = linear_map(A, v)
+new_img = generic_map(f, v)
 
 cv2.imshow('linear map', new_img)
 cv2.waitKey(0)
