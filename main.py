@@ -8,11 +8,6 @@ if img is not None:
     print(img.shape)
     print(img)
 
-    gray = (img[:, :, 0] + img[:, :, 1] + img[:, :, 2]) / 3
-
-    img[:, :, 0] = gray
-    img[:, :, 1] = gray
-    img[:, :, 2] = gray
 
     cv2.imshow('gam junior', img)
 
