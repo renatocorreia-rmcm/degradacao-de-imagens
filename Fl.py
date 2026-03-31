@@ -108,11 +108,32 @@ class Fl:
 			return str(self.value)
 		return f"{'-' if self.sinal == -1 else '+'}{self.m}{(t+2-len(str(self.m)))*'0'}*{b}^{self.e}"  # todo: optimize trailling zeros format
 
+	def __eq__(self, other):
+		if isinstance(other, Fl):
+			return Fl(other.value == self.value)
+		return Fl(other).__eq__(self)
 
-print(Fl(2) + 100 - 10)
-print(3+-Fl(-5.5))
-print(float('-inf'))
-print(10 - Fl(5))
-print(-Fl(-4))
-print(Fl(3)/2)
-print(3/Fl(2)*4/10)
+	def __ne__(self, other):
+		if isinstance(other, Fl):
+			return Fl(other.value != self.value)
+		return Fl(other).__ne__(self)
+
+	def __gt__(self, other):
+		if isinstance(other, Fl):
+			return Fl(other.value > self.value)
+		return Fl(other).__gt__(self)
+
+	def __ge__(self, other):
+		if isinstance(other, Fl):
+			return Fl(other.value >= self.value)
+		return Fl(other).__ge__(self)
+	
+	def __lt__(self, other):
+		if isinstance(other, Fl):
+			return Fl(other.value < self.value)
+		return Fl(other).__lt__(self)
+
+	def __le__(self, other):
+		if isinstance(other, Fl):
+			return Fl(other.value <= self.value)
+		return Fl(other).__le__(self)
