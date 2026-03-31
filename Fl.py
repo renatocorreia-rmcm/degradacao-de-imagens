@@ -87,7 +87,7 @@ class Fl:
 
 	def __mul__(self, other):
 		if isinstance(other, Fl):
-			return Fl(self.value.__mul__(other.value))
+			return Fl(self.value * (other.value))
 		return self.__mul__(Fl(other))
 
 	def __rmul__(self, other):
@@ -110,30 +110,33 @@ class Fl:
 
 	def __eq__(self, other):
 		if isinstance(other, Fl):
-			return Fl(other.value == self.value)
+			return other.value == self.value
 		return Fl(other).__eq__(self)
 
 	def __ne__(self, other):
 		if isinstance(other, Fl):
-			return Fl(other.value != self.value)
+			return other.value != self.value
 		return Fl(other).__ne__(self)
 
 	def __gt__(self, other):
 		if isinstance(other, Fl):
-			return Fl(other.value > self.value)
+			return other.value < self.value
 		return Fl(other).__gt__(self)
 
 	def __ge__(self, other):
 		if isinstance(other, Fl):
-			return Fl(other.value >= self.value)
+			return other.value <= self.value
 		return Fl(other).__ge__(self)
 	
 	def __lt__(self, other):
 		if isinstance(other, Fl):
-			return Fl(other.value < self.value)
+			return other.value > self.value
 		return Fl(other).__lt__(self)
 
 	def __le__(self, other):
 		if isinstance(other, Fl):
-			return Fl(other.value <= self.value)
+			return other.value >= self.value
 		return Fl(other).__le__(self)
+
+	def __abs__(self):
+		return Fl(abs(self.value))
