@@ -3,6 +3,8 @@ import math
 import numpy as np
 import cv2
 
+# todo: definir função top level pra magnificação/contração (chama linear map)
+
 
 def bilerp(v00, v01, v10, v11, di, dj):
     return (
@@ -18,7 +20,7 @@ def linear_map(matrix: np.ndarray, img: np.ndarray):  # todo: use our Fl type
     assert img.ndim == 3
 
     assert np.linalg.det(matrix) != 0
-    matrix_inv = np.linalg.inv(matrix)  # todo: test gauss elimination and lu decomposition
+    matrix_inv = np.linalg.inv(matrix)  # todo: test gauss elimination, lu decomposition and QR decomposition
 
     h, w = img.shape[0], img.shape[1]
 
