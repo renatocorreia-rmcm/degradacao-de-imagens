@@ -65,7 +65,7 @@ def linear_map(matrix: np.ndarray, img: np.ndarray):  # todo: use our Fl type
             if (
                     0 <= old_i < h and
                     0 <= old_j < w
-            ):
+            ):  # todo: else: transparente (ao inves de preto) (adicionar canal alpha na imagem)
                 # img[old_i][old_j]
 
                 # bounds safety
