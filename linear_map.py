@@ -4,6 +4,11 @@ import numpy as np
 import cv2
 
 
+def load_img(path: str) -> np.ndarray:
+    img = cv2.imread(path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
+    return img
+
 def bilerp(v00, v01, v10, v11, di, dj):
     return (
             v00 * (1 - di) * (1 - dj) +
@@ -58,8 +63,9 @@ def resize(img: np.ndarray, factor: float = None, width: int = None, height: int
 
 
 def linear_map(matrix: np.ndarray, img: np.ndarray):  # todo: use our Fl type
-    assert matrix.shape == (2, 2)
-    assert img.ndim == 3
+    assert matrix.shape == (2, 2)  # R2 square matrix
+    assert img.ndim == 3  #  matrix of pixels
+    assert img.shape[2] == 4  # alpha channel
 
     assert np.linalg.det(matrix) != 0
     matrix_inv = np.linalg.inv(matrix)  # todo: test gauss elimination, lu decomposition and QR decomposition
@@ -97,8 +103,8 @@ def linear_map(matrix: np.ndarray, img: np.ndarray):  # todo: use our Fl type
     new_h = i_max - i_min + 1
     new_w = j_max - j_min + 1
 
-    new_img = np.zeros((new_h, new_w, 3), dtype='uint8')
-    old_img = np.zeros((new_h, new_w, 3), dtype='uint8')
+    new_img = np.zeros((new_h, new_w, 4), dtype='uint8')
+    old_img = np.zeros((new_h, new_w, 4), dtype='uint8')
 
     for new_i in range(  # tranformed image bounding box i
             int(np.floor(np.min(transformed_vertices[:, 0]))+corretor[0]),
@@ -144,24 +150,20 @@ def linear_map(matrix: np.ndarray, img: np.ndarray):  # todo: use our Fl type
     return old_img, new_img
 
 
-v: np.ndarray = cv2.imread('assets/cat.jpg')
+v: np.ndarray = load_img('assets/small_cat.jpg')
 
 A = np.array([
     [-1.5, -1],
     [0, -0.75]
 ])
 
-theta = -math.pi / 8
-R = np.array([
-    [math.cos(theta), math.sin(theta)],
-    [-math.sin(theta), math.cos(theta)]
-])
 
 old_img, new_img = rotate(img=v)
-for i in range(90):
-    old_img, new_img = rotate(img=new_img)
 
-cv2.imwrite('old_img.png', old_img)
-cv2.imwrite('new_img.png', new_img)
-overlay = cv2.addWeighted(new_img, 0.5, old_img, 0.5, 0)
-cv2.imwrite('overlay.png', overlay)
+for i in range(360):
+    old_img, new_img = rotate(img=new_img)
+    print(i)
+    cv2.imwrite('old_img.png', old_img)
+    cv2.imwrite('new_img.png', new_img)
+    overlay = cv2.addWeighted(new_img, 0.5, old_img, 0.5, 0)
+    cv2.imwrite('overlay.png', overlay)
