@@ -10,13 +10,39 @@ def load_img(path: str) -> np.ndarray:
     return img
 
 def bilerp(v00, v01, v10, v11, di, dj):
-    return (
-            v00 * (1 - di) * (1 - dj) +
-            v01 * (1 - di) * dj +
-            v10 * di * (1 - dj) +
-            v11 * di * dj
-    )
+    # weights
+    w00 = (1 - di) * (1 - dj)
+    w01 = (1 - di) * dj
+    w10 = di * (1 - dj)
+    w11 = di * dj
 
+    pixels = [v00, v01, v10, v11]
+    weights = [w00, w01, w10, w11]
+
+    acc_rgb = np.zeros(3, dtype=np.float64)
+    acc_alpha = 0.0
+    total_weight = 0.0
+
+    for p, w in zip(pixels, weights):
+        alpha = p[3] / 255.0
+
+        if alpha > 0:  # ignore fully transparent pixels
+            acc_rgb += p[:3] * w * alpha
+            acc_alpha += w * alpha
+            total_weight += w * alpha
+
+    if total_weight > 0:
+        rgb = acc_rgb / total_weight
+        alpha = acc_alpha / sum(weights)  # or just acc_alpha
+    else:
+        return np.array([0, 0, 0, 0], dtype=np.uint8)
+
+    return np.array([
+        int(rgb[0]),
+        int(rgb[1]),
+        int(rgb[2]),
+        int(alpha * 255)
+    ], dtype=np.uint8)
 
 def rotate(img: np.ndarray, angle: float = (2*np.pi)/360):
     return linear_map(
@@ -150,20 +176,27 @@ def linear_map(matrix: np.ndarray, img: np.ndarray):  # todo: use our Fl type
     return old_img, new_img
 
 
-v: np.ndarray = load_img('assets/small_cat.jpg')
+if __name__ == "__main__":
 
-A = np.array([
-    [-1.5, -1],
-    [0, -0.75]
-])
+    v: np.ndarray = load_img('assets/tinycat.jpg')
+
+    A = np.array([
+        [-1.5, -1],
+        [0, -0.75]
+    ])
 
 
-old_img, new_img = rotate(img=v)
-
-for i in range(360):
-    old_img, new_img = rotate(img=new_img)
-    print(i)
+    old_img, new_img = rotate(img=v)
     cv2.imwrite('old_img.png', old_img)
     cv2.imwrite('new_img.png', new_img)
     overlay = cv2.addWeighted(new_img, 0.5, old_img, 0.5, 0)
     cv2.imwrite('overlay.png', overlay)
+
+    for i in range(360):
+        old_img, new_img = rotate(img=new_img)
+        bgr = new_img[:, :, :3]  # drop alpha channel
+        cv2.imwrite('new_img.png', bgr)
+        print(i)
+        cv2.imwrite('old_img.png', old_img)
+        overlay = cv2.addWeighted(new_img, 0.5, old_img, 0.5, 0)
+        cv2.imwrite('overlay.png', overlay)
