@@ -23,6 +23,40 @@ def rotate(img: np.ndarray, angle: float = (2*np.pi)/360):
     )
 
 
+def resize(img: np.ndarray, factor: float = None, width: int = None, height: int = None):
+    """
+    takes scaling factor
+    or raw new size
+    can pass only width or only height and missing parameter will follow img scale
+    if pass both width and height, deforms img to that size
+    """
+
+    assert factor or width or height  # must give at least one size reference
+
+    if factor is not None:
+        assert factor > 0  # resizing takes positive scaling factor
+        return linear_map(
+            np.array([
+                [factor, 0],
+                [0, factor]
+            ]),
+            img
+        )
+
+    if not height:
+        height = (width / img.shape[1]) * img.shape[0]
+    if not width:
+        width = (height/img.shape[0])*img.shape[1]
+
+    return linear_map(
+        np.array([
+            [height/img.shape[0], 0],
+            [0, width/img.shape[1]]
+        ]),
+        img
+    )
+
+
 def linear_map(matrix: np.ndarray, img: np.ndarray):  # todo: use our Fl type
     assert matrix.shape == (2, 2)
     assert img.ndim == 3
