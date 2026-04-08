@@ -2,12 +2,62 @@ import numpy as np
 from Fl import Fl
 
 
-# todo: implement gauss elimination
 # todo: implement QR decomposition
 
 
 def to_fl_matrix(M: np.ndarray) -> np.ndarray:
     return np.vectorize(Fl)(M)
+
+
+def gauss_elimination(A: np.ndarray, b: np.ndarray) -> np.ndarray:
+    if A.shape[0] != A.shape[1]:
+        raise ValueError(f"Matrix is not square: {A.shape}")
+
+    n = len(A)
+    aug_matrix = np.c_[A, b]
+
+    for j in range(n):
+        # --- PARTIAL PIVOTING ---
+        pivot_row = j + np.argmax(np.abs(aug_matrix[j:, j]))
+
+        if abs(aug_matrix[pivot_row, j]) < 1e-15:
+            raise ValueError(f"Matrix is singular or nearly singular at column {j}")
+
+        # Swap rows in the augmented matrix
+        if pivot_row != j:
+            aug_matrix[[j, pivot_row]] = aug_matrix[[pivot_row, j]]
+        # --------------------------------------------
+
+        for i in range(j + 1, n):
+            k = aug_matrix[i, j] / aug_matrix[j, j]
+
+            for col in range(j, n + 1):
+                aug_matrix[i, col] = aug_matrix[i, col] - (k * aug_matrix[j, col])
+
+    s = np.empty(n, dtype=object)
+
+    for i in range(n - 1, -1, -1):
+        soma = aug_matrix[i, n]
+        for j in range(i + 1, n):
+            soma -= aug_matrix[i, j] * s[j]
+
+        s[i] = soma / aug_matrix[i, i]
+
+    return s
+
+# A = np.array([
+#     [20, 1, -1],
+#     [-3, 33, 2],
+#     [-2, 1, 11]
+# ])
+# b = np.array([8, -11, -3])
+#
+# A = to_fl_matrix(A)
+# b = to_fl_matrix(b)
+# print(gauss_elimination(A, b))
+# [0.406, -0.286, -0.173]
+
+
 
 def LU_factorization(matrix:np.ndarray, fl=False, pivoting=True) -> tuple[np.array]:
     size = matrix.shape[0]
