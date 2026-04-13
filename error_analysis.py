@@ -4,6 +4,7 @@ import cv2
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 
 
 def plot_error_histogram(diff):
@@ -27,6 +28,44 @@ def plot_error_histogram(diff):
     plt.xlabel("Error Value")
     plt.ylabel("Density")
     plt.legend()
+    plt.show()
+
+def plot_error_boxplot(diff):
+    # Flatten + estrutura "long format"
+    data = pd.DataFrame({
+        "Error": np.concatenate([
+            diff[:, :, 0].ravel(),
+            diff[:, :, 1].ravel(),
+            diff[:, :, 2].ravel()
+        ]),
+        "Channel": (
+            ["Blue"] * diff[:, :, 0].size +
+            ["Green"] * diff[:, :, 1].size +
+            ["Red"] * diff[:, :, 2].size
+        )
+    })
+
+    plt.figure(figsize=(9, 6))
+
+    sns.boxplot(
+        data=data,
+        x="Channel",
+        y="Error",
+        width=0.5,
+        showfliers=True,
+        fliersize=2,
+        linewidth=1.5
+    )
+
+    # Linha de erro zero
+    plt.axhline(0, linestyle='--', linewidth=1.2)
+
+    plt.title("Error Distribution per Channel")
+    plt.xlabel("Color Channel")
+    plt.ylabel("Error")
+
+    plt.grid(axis='y', linestyle='--', alpha=0.4)
+
     plt.show()
 
 def ssim(img1: np.ndarray, img2: np.ndarray) -> float:
@@ -75,9 +114,7 @@ def get_statistics(filename_fl: str, filename_no_fl:str):
 
     diff = cv2.absdiff(img_fl, img_no_fl)
 
-    plot_error_histogram(diff)
-
-    cv2.imwrite("diff_test.png", diff)
+    # cv2.imwrite("diff_test.png", diff)
     
     # Max Absolute Error
     max_err = np.max(diff)
@@ -119,6 +156,7 @@ def get_statistics(filename_fl: str, filename_no_fl:str):
     print(f"Mean Delta E: {mean_delta_e}\n")
     
     plot_error_histogram(diff)
+    plot_error_boxplot(diff)
 
 
     return {
