@@ -104,12 +104,12 @@ def ssim(img1: np.ndarray, img2: np.ndarray) -> float:
     return float(np.mean(ssim_map))
 
 
-def get_statistics(filename_fl: str, filename_no_fl:str):
-    img_fl_uint = cv2.imread(filename_fl, cv2.IMREAD_COLOR)
-    img_no_fl_uint = cv2.imread(filename_no_fl, cv2.IMREAD_COLOR)
+def get_statistics(img_fl_input: np.ndarray, img_no_fl_input: np.ndarray):
+    img_fl_uint = np.clip(np.round(img_fl_input), 0, 255).astype(np.uint8)
+    img_no_fl_uint = np.clip(np.round(img_no_fl_input), 0, 255).astype(np.uint8)
 
-    img_fl = img_fl_uint.astype(np.float64)
-    img_no_fl = img_no_fl_uint.astype(np.float64)
+    img_fl = img_fl_input.astype(np.float64)
+    img_no_fl = img_no_fl_input.astype(np.float64)
 
 
     diff = cv2.absdiff(img_fl, img_no_fl)
@@ -147,16 +147,16 @@ def get_statistics(filename_fl: str, filename_no_fl:str):
 
 
     
-    print("--- Estatísticas ---")
-    print(f"Max Error (L_inf): {max_err}")
-    print(f"RMSE: {rmse}")
-    print(f"MAE: {mae}")
-    print(f"PSNR: {psnr} dB")
-    print(f"SSIM: {ssim_val}")
-    print(f"Mean Delta E: {mean_delta_e}\n")
+    # print("--- Estatísticas ---")
+    # print(f"Max Error (L_inf): {max_err}")
+    # print(f"RMSE: {rmse}")
+    # print(f"MAE: {mae}")
+    # print(f"PSNR: {psnr} dB")
+    # print(f"SSIM: {ssim_val}")
+    # print(f"Mean Delta E: {mean_delta_e}\n")
     
-    plot_error_histogram(diff)
-    plot_error_boxplot(diff)
+    # plot_error_histogram(diff)
+    # plot_error_boxplot(diff)
 
 
     return {
@@ -175,4 +175,11 @@ def get_statistics(filename_fl: str, filename_no_fl:str):
 # - talvez fazer essa análise a cada iteração da sequencia de trasnformações seja melhor para analisar
 # Nesse caso, essa análise de erro rodaria dentro do run_linear_experiment (lembrar de tirar do plot do histograma, caso for fazer assim)
 if __name__ == "__main__":
-    get_statistics("experiments_linear/tinycat/lanczos_fl.png", "experiments_linear/tinycat/lanczos_no_fl.png")
+
+    img1_fl_path = "experiments_linear/tinycat/lanczos_fl.png"
+    img1_no_fl_path = "experiments_linear/tinycat/lanczos_no_fl.png"
+
+    matriz_fl = cv2.imread(img1_fl_path, cv2.IMREAD_COLOR)
+    matriz_no_fl = cv2.imread(img1_no_fl_path, cv2.IMREAD_COLOR)
+
+    print(get_statistics(matriz_fl,matriz_no_fl))

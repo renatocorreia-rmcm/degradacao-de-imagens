@@ -1,9 +1,12 @@
 from linear_map import load_img, linear_map
+from error_analysis import get_statistics
 import matrix as mtx
 import numpy as np
 import interp
 import cv2
 import os
+import pandas as pd
+
 
 
 def save_results(results, filename):
@@ -30,7 +33,6 @@ def save_results(results, filename):
 def run_linear_experiment(filename: str, A:np.ndarray, n: int, interp_methods: np.ndarray):
 
     v = load_img(f'assets/{filename}')
-
     v_fl = mtx.to_fl_matrix(v)
 
     results = {
@@ -39,7 +41,9 @@ def run_linear_experiment(filename: str, A:np.ndarray, n: int, interp_methods: n
             'no_fl': v.copy()
         } for method in interp_methods
     }
-
+    
+    # 7 = # metrics
+    stats_serie = {k: np.zeros((n,7)) for k in interp_methods}
 
     for i in range(n):
 
@@ -55,20 +59,24 @@ def run_linear_experiment(filename: str, A:np.ndarray, n: int, interp_methods: n
 
                 results[interp_method][machine] = new_img
 
-    return results
+            stats_serie[interp_method][i] = list(get_statistics(results[interp_method]['fl'], results[interp_method]['no_fl']).values())
+    
+
+    return results, stats_serie
 
 # Reflection 
 A = np.array([
     [1, 0],
     [0, -1]
 ])
-n = 1 # sequence length
+n = 2 # sequence length
 
 img = "tinycat.jpg"
 
-results = run_linear_experiment(img, A, n, ["lanczos"])
+results, statistics = run_linear_experiment(img, A, n, ["bilerp"])
 
 save_results(results, img)
-
+print(statistics["bilerp"])
+# todo > criar um dataframe pra cada método de interpolaçao
 
 
