@@ -1,24 +1,22 @@
-[comment]: <> (
-TODO: 
-adicionar uma imagem REPRESENTATIVA por tópico
-sempre tentar manter pelo menos 1 imagem na tela pra não ficar entediante
-TODO:
-)
-
-
 # Degradação de imagens
 
-Demonstração da degradação de imagens devido ao problema de **representação em ponto flutuante**
+Como erros de **ponto flutuante** podem destruir uma imagem?
 
-Ilustração do que ocorre com uma imagem quando ela é transformada
-por operações que são sensíveis à representação numa **máquina pequena**.
+Este projeto simula uma **máquina de precisão limitada** e mostra,
+na prática, como operações numéricas introduzem distorções visuais **acumulativas**.
 
+
+[comment]: <> (
+TODO:
+ varios gifs de degradação pra intuir o processo
+)
 
 # Simulando uma máquina pequena
 
 ## A classe Fl
 
-O tipo _Fl_ é um modelo que simula o erro de representação um ponto flutuante numa máquina de `b` **bits**, `t` dígitos de **mantissa** e **expoente** `k1 <= e <= k2`.
+O tipo _Fl_ é um modelo que simula o erro de representação de um ponto flutuante 
+numa máquina de `b` **bits**, `t` dígitos de **mantissa** e **expoente** `k1 <= e <= k2`.
 
 Ela simula as operações no espaço da máquina computando 
 
@@ -28,10 +26,9 @@ sendo `op` a sobrecarga dos principais operadores lógicos matemáticos usados n
 
 O modelo também tem features como **representação simbólica de valores infinitesimais** (_over_ / _underflow_ não corrompem o programa) e **representação na forma subnormal da mantissa** para maximizar o leque de representáveis, conforme feito em máquinas reais.
 
-[comment]: <> (
-TODO: 
-imagem de reta dos representáveis
-)
+
+<img src="assets/reta_dos_representaveis.png" alt="reta dos representáveis" width="100%">
+
 
 # Representando imagens com CV2 e NumPy
 
@@ -40,13 +37,13 @@ O **CV2** representa uma imagem como um array **NumPy** de _shape_ `(height, wid
 Isso pode ser entendido como uma matriz de `height` linhas e `width` colunas, 
 onde cada elemento é um pixel (4-upla) com valores (`Blue`, `Green`, `Red`, `Alpha`)
 
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="assets/str_repr_gradiente.png" width="48%">
+<img src="assets/gradiente.png" width="48%">
+</div>
+
 Não é necessário converter os valores dos pixels para o tipo _Fl_, 
 pois assumimos que a menor das máquinas consegue representar pelo menos os inteiros de 0 a 255. 
-
-[comment]: <> (
-TODO:
-imagem do nosso 3x3 com representação str do lado
-)
 
 ## Sistema de coordenadas geral
 
@@ -116,36 +113,44 @@ Para **não corromper a linearidade**, as operações lineares desse programa se
 > `p` &harr; `v` &harr; `v'` &harr; `p'`
 
 
-### Demo
-[comment]: <> (
-TODO: 
-imagem demonstração de aplicação de transformação linear
-)
+### Demo - Linear
 
-
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="assets/tinycat.jpg" width="48%">
+<img src="assets/transformed_tiny_cat.png" width="48%">
+</div>
+Aplicação de cisalhamento com reflexão horizontal
 
 
 ## Transformações não lineares com SymPy
 
 A função `generic_map` aplica em uma imagem 
 uma transformação genérica do tipo `f: R² -> R²` 
-que é passada como `f(x,y) = g(x,y), h(x,y)` com `g, h: R² -> R¹`.
+que é passada como `f(i,j) = g(i,j), h(i,j)` com `g, h: R² -> R¹`.
 
 A biblioteca SymPy permite calcular a função inversa 
 de quase qualquer composição de funções algébricas e trigonométricas,
 e por isso foi usada para fazer o mapeamento do contradomínio para o domínio da imagem.
 
-### Demo
-[comment]: <> (
-TODO: 
-imagem demonstração de aplicação de transformação linear
-)
+### Demo - Não Linear
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="assets/cat.jpg" width="48%">
+<img src="assets/cat_normal.png" width="48%">
+</div>
+
+Aplicação de `f(i,j) = [(i + sin( j/30 ) * ( j/5 )), j]`
 
 # Análise de erros de representação: aplicando transformações com o tipo Fl
+
+Comparações feitas entre Float nativo do Python e _Fl_ 
+para máquina com parâmetros b=, t=,  k1=, k2=.
 
 ## Transformações lineares
 
 ### Contração
+
+
 
 ### Magnificação
 
