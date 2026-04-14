@@ -16,18 +16,35 @@ def clamp(x, mi=0, ma=255):
     return min(ma, max(mi, x))
 
 
-def rotate(img: np.ndarray, angle: float = (2 * np.pi) / 360, vertices_pixels=None):
+def rotate(
+        img: np.ndarray,
+        angle: float = (2 * np.pi) / 360,
+        vertices_pixels=None,
+        interpolation=interp.knn,
+        use_fl: bool = False
+
+):
     return linear_map(
         matrix=np.array([
             [math.cos(angle), math.sin(angle)],
             [-math.sin(angle), math.cos(angle)]
         ]),
         img=img,
-        vertices_pixels=vertices_pixels
+        vertices_pixels=vertices_pixels,
+        interpolation=interpolation,
+        use_fl = use_fl
     )
 
 
-def resize(img: np.ndarray, factor: float = None, width: int = None, height: int = None, vertices_pixels=None):
+def resize(
+        img: np.ndarray,
+        factor: float = None,
+        width: int = None,
+        height: int = None,
+        vertices_pixels=None,
+        interpolation=interp.knn,
+        use_fl: bool = False
+):
     """
     takes scaling factor
     or raw new size
@@ -40,11 +57,14 @@ def resize(img: np.ndarray, factor: float = None, width: int = None, height: int
     if factor is not None:
         assert factor > 0  # resizing takes positive scaling factor
         return linear_map(
-            np.array([
+            matrix=np.array([
                 [factor, 0],
                 [0, factor]
             ]),
-            img
+            img=img,
+            vertices_pixels=vertices_pixels,
+            interpolation=interpolation,
+            use_fl=use_fl
         )
 
     if not height:
@@ -53,11 +73,15 @@ def resize(img: np.ndarray, factor: float = None, width: int = None, height: int
         width = (height / img.shape[0]) * img.shape[1]
 
     return linear_map(
-        np.array([
+        matrix=np.array([
             [height / img.shape[0], 0],
             [0, width / img.shape[1]]
         ]),
-        img, vertices_pixels=vertices_pixels
+        img=img,
+        vertices_pixels=vertices_pixels,
+        interpolation=interpolation,
+        use_fl=use_fl
+
     )
 
 
@@ -178,11 +202,15 @@ if __name__ == "__main__":
     v: np.ndarray = load_img('assets/tinycat.jpg')
 
     A = np.array([
-        [2, 0],
-        [0, 2]
+        [0.7, 0],
+        [0, 0.7]
     ])
 
-    v_fl = mtx.to_fl_matrix(v)
-    v_fl_new, vertices = linear_map(A, v, use_fl=True, interpolation=interp.knn)
+    # resized, vertices = resize(img=v, factor=0.5, use_fl=False)
+    # resized_fl, vertices_fl = resize(img=v, factor=0.5, use_fl=True)
 
-    cv2.imwrite("fl.png", v_fl_new)
+    resized, vertices = linear_map(img=v, matrix=A, use_fl=False)
+    resized_fl, vertices_fl = linear_map(img=v, matrix=A, use_fl=True)
+
+    cv2.imwrite("assets/no_fl.png", resized)
+    cv2.imwrite("assets/fl.png", resized_fl)

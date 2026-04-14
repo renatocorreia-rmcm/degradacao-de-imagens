@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     # Imagem real jogada
     img_normal = generic_map_interpolated(f_inv, v, fl=False)
-    cv2.imwrite('cat_normal.png', img_normal)
+    cv2.imwrite('assets/cat_normal.png', img_normal)
 
     # Imagem representável
     img_fl = generic_map_interpolated(f_inv, v, fl=True)
