@@ -5,7 +5,7 @@ from math import log, floor
 
 # MACHINE SETTINGS
 b = 10
-t = 2
+t = 1
 k1 = -3
 k2 = 3
 

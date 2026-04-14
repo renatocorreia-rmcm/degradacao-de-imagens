@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img: np.ndarray = cv2.imread('assets/gam.jpg')
+img: np.ndarray = cv2.imread('images/gam.jpg')
 
 if img is not None:
     print(type(img))

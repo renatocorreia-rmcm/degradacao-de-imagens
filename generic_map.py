@@ -96,7 +96,7 @@ def generic_map_interpolated(f_inv, img, fl=False):
 
 if __name__ == "__main__":
 
-    v = cv2.imread('assets/cat.jpg')
+    v = cv2.imread('images/cat.jpg')
     v = cv2.cvtColor(v, cv2.COLOR_BGR2BGRA)
 
     # Gera a função inversa
@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     # Imagem real jogada
     img_normal = generic_map_interpolated(f_inv, v, fl=False)
-    cv2.imwrite('assets/cat_normal.png', img_normal)
+    cv2.imwrite('images/assets/cat_normal.png', img_normal)
 
     # Imagem representável
     img_fl = generic_map_interpolated(f_inv, v, fl=True)

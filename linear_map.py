@@ -32,7 +32,7 @@ def rotate(
         img=img,
         vertices_pixels=vertices_pixels,
         interpolation=interpolation,
-        use_fl = use_fl
+        use_fl=use_fl
     )
 
 
@@ -199,12 +199,70 @@ def linear_map(matrix: np.ndarray,
 
 
 if __name__ == "__main__":
-    gam: np.ndarray = load_img('assets/tinycat2.jpg')
 
     # resizing
+    # img: np.ndarray = load_img('images/cat.jpg')
+    #
+    # resized, vertices = resize(img=gam, factor=4.0, use_fl=False, interpolation=interp.bicubic)
+    # resized_fl, vertices_fl = resize(img=gam, factor=4.0, use_fl=True, interpolation=interp.bicubic)
+    #
+    # cv2.imwrite("images/tinycat_resized.png", resized)
+    # cv2.imwrite("images/tinycat_resized_fl.png", resized_fl)
 
-    resized, vertices = resize(img=gam, factor=4.0, use_fl=False, interpolation=interp.bicubic)
-    resized_fl, vertices_fl = resize(img=gam, factor=4.0, use_fl=True, interpolation=interp.bicubic)
+    # transforming
 
-    cv2.imwrite("assets/tinycat2_resized_2.png", resized)
-    cv2.imwrite("assets/gam_resized_fl_2.png", resized_fl)
+    # matrix = np.array([
+    #     [-1, 0],
+    #     [1, 2]
+    # ])
+    #
+    # resized, vertices = linear_map(matrix=matrix, img=img, interpolation=interp.bicubic, use_fl=False)
+    # resized_fl, vertices_fl = linear_map(matrix=matrix, img=img, interpolation=interp.bicubic, use_fl=True)
+    #
+    # cv2.imwrite("images/assets/tinycat2_transformed.png", resized)
+    # cv2.imwrite("images/assets/tinycat2_transformed_fl.png", resized_fl)
+
+
+    # rotating
+    #
+    # resized, vertices = rotate(img=img, angle=150*np.pi/180, use_fl=False, interpolation=interp.bicubic)
+    # resized_fl, vertices_fl = rotate(img=img, angle=150*np.pi/180, use_fl=True, interpolation=interp.bicubic)
+    #
+    # cv2.imwrite("images/assets/cat_rotated.png", resized)
+    # cv2.imwrite("images/assets/cat_rotated_fl.png", resized_fl)
+
+    # contracting
+
+    # img: np.ndarray = load_img('images/gam.jpg')
+    #
+    # decompositions = 10
+    #
+    # vertices = vertices_fl = None
+    # resized = resized_fl = img
+    #
+    # for i in range(decompositions):
+    #     print(i)
+    #     print(np.pow(0.1, 1/decompositions))
+    #     resized, vertices = resize(img=resized, factor=np.pow(0.1, 1/decompositions), use_fl=False, interpolation=interp.bicubic, vertices_pixels=vertices)
+    #     resized_fl, vertices_fl = resize(img=resized_fl, factor=np.pow(0.1, 1/decompositions), use_fl=True, interpolation=interp.bicubic, vertices_pixels=vertices_fl)
+    #
+    #     cv2.imwrite(f"images/assets/{i}_gam_contracted.png", resized)
+    #     cv2.imwrite(f"images/assets/{i}_cat_contracted_fl.png", resized_fl)
+
+    # magnifying
+
+    img: np.ndarray = load_img('images/gam.jpg')
+
+    decompositions = 10
+
+    vertices = vertices_fl = None
+    resized = resized_fl = img
+
+    for i in range(decompositions):
+        print(i)
+        print(np.pow(0.1, 1/decompositions))
+        resized, vertices = resize(img=resized, factor=np.pow(0.1, 1/decompositions), use_fl=False, interpolation=interp.bicubic, vertices_pixels=vertices)
+        resized_fl, vertices_fl = resize(img=resized_fl, factor=np.pow(0.1, 1/decompositions), use_fl=True, interpolation=interp.bicubic, vertices_pixels=vertices_fl)
+
+        cv2.imwrite(f"images/assets/{i}_gam_contracted.png", resized)
+        cv2.imwrite(f"images/assets/{i}_cat_contracted_fl.png", resized_fl)

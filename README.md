@@ -27,7 +27,7 @@ sendo `op` a sobrecarga dos principais operadores lógicos matemáticos usados n
 O modelo também tem features como **representação simbólica de valores infinitesimais** (_over_ / _underflow_ não corrompem o programa) e **representação na forma subnormal da mantissa** para maximizar o leque de representáveis, conforme feito em máquinas reais.
 
 
-<img src="assets/reta_dos_representaveis.png" alt="reta dos representáveis" width="100%">
+<img src="images/assets/reta_dos_representaveis.png" alt="reta dos representáveis" width="100%">
 
 
 # Representando imagens com CV2 e NumPy
@@ -38,8 +38,8 @@ Isso pode ser entendido como uma matriz de `height` linhas e `width` colunas,
 onde cada elemento é um pixel (4-upla) com valores (`Blue`, `Green`, `Red`, `Alpha`)
 
 <div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="assets/str_repr_gradiente.png" width="48%">
-<img src="assets/gradiente.png" width="48%">
+<img src="images/assets/str_repr_gradiente.png" width="48%">
+<img src="images/gradiente.png" width="48%">
 </div>
 
 Não é necessário converter os valores dos pixels para o tipo _Fl_, 
@@ -116,8 +116,8 @@ Para **não corromper a linearidade**, as operações lineares desse programa se
 ### Demo - Linear
 
 <div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="assets/tinycat.jpg" width="48%">
-<img src="assets/transformed_tiny_cat.png" width="48%">
+<img src="images/tinycat.jpg" width="48%">
+<img src="images/assets/transformed_tiny_cat.png" width="48%">
 </div>
 Aplicação de cisalhamento com reflexão horizontal
 
@@ -135,18 +135,24 @@ e por isso foi usada para fazer o mapeamento do contradomínio para o domínio d
 ### Demo - Não Linear
 
 <div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="assets/cat.jpg" width="48%">
-<img src="assets/cat_normal.png" width="48%">
+<img src="images/cat.jpg" width="48%">
+<img src="images/assets/cat_normal.png" width="48%">
 </div>
 
 Aplicação de `f(i,j) = [(i + sin( j/30 ) * ( j/5 )), j]`
 
 # Análise de erros de representação: aplicando transformações com o tipo Fl
 
-Comparações feitas entre Float nativo do Python e _Fl_ 
-para máquina com parâmetros b=, t=,  k1=, k2=.
+Comparações feitas entre `Float` nativo do Python e `Fl(b=10, t=1,  k1=-3, k2=3)`
 
 ## Transformações lineares
+
+
+
+
+
+
+
 
 ### Contração
 `factor = 0.1`
@@ -154,38 +160,245 @@ para máquina com parâmetros b=, t=,  k1=, k2=.
 
 `img:`
 
-<img src="assets/gam.jpg" width="100%">
+<img src="images/gam.jpg" width="100%">
 
 #### Python Float
 
-<img src="assets/gam_resized_1.png" width="100%">
+<img src="images/assets/gam_resized.png" width="100%">
 
 
-#### Fl(10, 2, -3, 3)
+[//]: # (#### Fl&#40;10, 2, -3, 3&#41;)
+
+[//]: # ()
+[//]: # (<div style="display: flex; justify-content: space-around; align-items: center;">)
+
+[//]: # (<img src="images/gam_resized_fl_2.png" width="100%">)
+
+[//]: # (</div>)
+
+#### Fl
 
 <div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="assets/gam_resized_fl_2.png" width="100%">
+<img src="images/assets/gam_resized_fl.png" width="100%">
 </div>
 
-#### Fl(10, 1, -3, 3)
 
-<div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="assets/gam_resized_fl_1.png" width="100%">
-</div>
+
+
 
 
 ### Magnificação
+`factor = 4`
+`interpolation = bicubic`
+
+`img:`
+
+<img src="images/tinycat.jpg" width="100%">
+
+#### Python Float
+
+<img src="images/assets/tinycat_resized.png" width="100%">
+
+
+#### Fl
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/tinycat_resized_fl.png" width="100%">
+</div>
+
+
+
+
+
+
+
 
 
 ### Deformação
+```
+matrix = [
+    [-1, 0],
+    [1, 2]
+] 
+```
+
+`interpolation = bicubic`
+
+`img:`
+
+<img src="images/tinycat2.jpg" width="100%">
+
+#### Python Float
+
+<img src="images/assets/tinycat2_transformed.png" width="100%">
+
+
+#### Fl
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/tinycat2_transformed_fl.png" width="100%">
+</div>
+
+
+
+
+
+
+
 
 ### Rotação
 
+`angle = 150°`
+`interpolation = bicubic`
+
+`img:`
+
+<img src="images/cat.jpg" width="100%">
+
+#### Python Float
+
+<img src="images/assets/cat_rotated.png" width="100%">
+
+
+#### Fl
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/cat_rotated_fl.png" width="100%">
+</div>
+
+
+
+
+
+
 ### Cópias repetidas
 
-#### Decomposição de transformação em multiplas transformações consecutivas
 
-#### Composições transformação - inversão 
+
+
+#### Decomposição de contração em multiplas contrações consecutivas
+
+`factor = (0.1)^(1/9)`
+`interpolation = bicubic`
+
+
+##### Python Float
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/0_gam_contracted.png" width="33%">
+<img src="images/assets/1_gam_contracted.png" width="33%">
+<img src="images/assets/2_gam_contracted.png" width="33%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/3_gam_contracted.png" width="33%">
+<img src="images/assets/4_gam_contracted.png" width="33%">
+<img src="images/assets/5_gam_contracted.png" width="33%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/6_gam_contracted.png" width="33%">
+<img src="images/assets/7_gam_contracted.png" width="33%">
+<img src="images/assets/8_gam_contracted.png" width="33%">
+</div>
+
+<img src="images/assets/9_gam_contracted.png" width="100%">
+
+
+##### Fl
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/0_gam_contracted_fl.png" width="33%">
+<img src="images/assets/1_gam_contracted_fl.png" width="33%">
+<img src="images/assets/2_gam_contracted_fl.png" width="33%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/3_gam_contracted_fl.png" width="33%">
+<img src="images/assets/4_gam_contracted_fl.png" width="33%">
+<img src="images/assets/5_gam_contracted_fl.png" width="33%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/6_gam_contracted_fl.png" width="33%">
+<img src="images/assets/7_gam_contracted_fl.png" width="33%">
+<img src="images/assets/8_gam_contracted_fl.png" width="33%">
+</div>
+
+<img src="images/assets/9_gam_contracted_fl.png" width="100%">
+
+
+
+
+#### Decomposição de magnificação em multiplas magnificações consecutivas
+
+#### Decomposição de deformação em multiplas deformações consecutivas
+
+
+
+
+
+#### Decomposição de rotação em múltiplas rotações consecutivas
+
+`angle = 10°`
+`interpolation = bicubic`
+
+
+
+##### Python Float
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/0gam_rotated.png" width="33%">
+<img src="images/assets/1gam_rotated.png" width="33%">
+<img src="images/assets/2gam_rotated.png" width="33%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/3gam_rotated.png" width="33%">
+<img src="images/assets/4gam_rotated.png" width="33%">
+<img src="images/assets/5gam_rotated.png" width="33%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/6gam_rotated.png" width="33%">
+<img src="images/assets/7gam_rotated.png" width="33%">
+<img src="images/assets/8gam_rotated.png" width="33%">
+</div>
+
+
+##### Fl
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/0gam_rotated_fl.png" width="24%">
+<img src="images/assets/1gam_rotated_fl.png" width="24%">
+<img src="images/assets/2gam_rotated_fl.png" width="24%">
+<img src="images/assets/3gam_rotated_fl.png" width="24%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/4gam_rotated_fl.png" width="24%">
+<img src="images/assets/5gam_rotated_fl.png" width="24%">
+<img src="images/assets/6gam_rotated_fl.png" width="24%">
+<img src="images/assets/7gam_rotated_fl.png" width="24%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/8gam_rotated_fl.png" width="24%">
+<img src="images/assets/9gam_rotated_fl.png" width="24%">
+<img src="images/assets/10gam_rotated_fl.png" width="24%">
+<img src="images/assets/11gam_rotated_fl.png" width="24%">
+</div>
+
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<img src="images/assets/12gam_rotated_fl.png" width="24%">
+<img src="images/assets/13gam_rotated_fl.png" width="24%">
+<img src="images/assets/14gam_rotated_fl.png" width="24%">
+<img src="images/assets/15gam_rotated_fl.png" width="24%">
+</div>
+
+
+
+#### Composições transformação-inversão
 
 
 ## Transformações não lineares
