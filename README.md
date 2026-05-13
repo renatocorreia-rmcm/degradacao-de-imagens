@@ -27,7 +27,7 @@ sendo `op` a sobrecarga dos principais operadores lógicos matemáticos usados n
 O modelo também tem features como **representação simbólica de valores infinitesimais** (_over_ / _underflow_ não corrompem o programa) e **representação na forma subnormal da mantissa** para maximizar o leque de representáveis, conforme feito em máquinas reais.
 
 
-<img src="images/assets/reta_dos_representaveis.png" alt="reta dos representáveis" width="100%">
+<img src="assets/reta_dos_representaveis.png" alt="reta dos representáveis" width="100%">
 
 
 # Representando imagens com CV2 e NumPy
@@ -38,17 +38,12 @@ Isso pode ser entendido como uma matriz de `height` linhas e `width` colunas,
 onde cada elemento é um pixel (4-upla) com valores (`Blue`, `Green`, `Red`, `Alpha`)
 
 <div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="images/assets/str_repr_gradiente.png" width="48%">
-<img src="images/gradiente.png" width="48%">
+<img src="assets/str_repr_gradiente.png" width="48%">
+<img src="assets/gradiente.png" width="48%">
 </div>
 
 Não é necessário converter os valores dos pixels para o tipo _Fl_, 
 pois assumimos que a menor das máquinas consegue representar pelo menos os inteiros de 0 a 255. 
-
-## Sistema de coordenadas geral
-
-Todas as coordenadas desse programa usam o sistema `i j`, e não `x y`
-
 
 # Manipulando imagens
 
@@ -70,13 +65,13 @@ diagrama mostrando o mapeamento inverson de uma imagem pra outra pela matriz inv
 
 ## Transformações lineares
 
-A função `linear_map` aplica uma dada matriz de transformação em uma imagem.
+A função `linear_map` aplica uma dada matriz de transformação numa imagem.
 
-As funções `rotate` e `resize` são rotinas de nivel mais alto 
+As funções `rotate` e `resize` são rotinas de nível mais alto 
 que **constroem a matriz** do `linear_map` a partir de **argumentos mais simples**, 
 como um ângulo de rotação, uma nova largura em pixels e etc.
 
-### Sistema de coordenadas para transformações lineares
+### Sistemas de coordenadas para transformações lineares
 
 Uma coordenada de uma imagem pode ter duas origens:
 - **Origem da matriz** em que está contida
@@ -89,7 +84,7 @@ TODO:
 diagrama mostrando a mesma coordenada em sistemas diferentes
 )
 
-Esse sistema é necessário porque algumas transformações modificam o _bounding box_ da imagem, 
+Múltiplos sistemas são necessários porque algumas transformações modificam o _bounding box_ da imagem, 
 de forma que o valor na origem da matriz não se preserva (quebrando a linearidade).
 
 [comment]: <> (
@@ -112,34 +107,20 @@ Para **não corromper a linearidade**, as operações lineares desse programa se
 
 > `p` &harr; `v` &harr; `v'` &harr; `p'`
 
+Onde:
+
+`p` é uma coordenada do tipo **pixel** e `v` é uma coordenada do tipo **vetor**
+
+`p'` e `v'` são `p` e `v` **transformados**
+
 
 ### Demo - Linear
 
 <div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="images/tinycat.jpg" width="48%">
-<img src="images/assets/transformed_tiny_cat.png" width="48%">
+<img src="" width="48%">
+<img src="" width="48%">
 </div>
 Aplicação de cisalhamento com reflexão horizontal
-
-
-## Transformações não lineares com SymPy
-
-A função `generic_map` aplica em uma imagem 
-uma transformação genérica do tipo `f: R² -> R²` 
-que é passada como `f(i,j) = g(i,j), h(i,j)` com `g, h: R² -> R¹`.
-
-A biblioteca SymPy permite calcular a função inversa 
-de quase qualquer composição de funções algébricas e trigonométricas,
-e por isso foi usada para fazer o mapeamento do contradomínio para o domínio da imagem.
-
-### Demo - Não Linear
-
-<div style="display: flex; justify-content: space-around; align-items: center;">
-<img src="images/cat.jpg" width="48%">
-<img src="images/assets/cat_normal.png" width="48%">
-</div>
-
-Aplicação de `f(i,j) = [(i + sin( j/30 ) * ( j/5 )), j]`
 
 # Análise de erros de representação: aplicando transformações com o tipo Fl
 
